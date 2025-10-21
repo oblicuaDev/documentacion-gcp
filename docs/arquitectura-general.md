@@ -29,7 +29,7 @@ El `Billy-workflow` es el cerebro que coordina todas las acciones.
 
 | Componente | Responsabilidad |
 | :--- | :--- |
-| **`Billy-workflow`** | 1. **Determina la Plataforma** de origen (Siigo, Cuenti, Sheets). 2. **Obtiene Credenciales** de Secret Manager. 3. **Invoca el Adaptador de Datos** (`get-data-from-*`). 4. **Itera** sobre cada factura obtenida. 5. **Invoca** `process-and-send-message` para cada factura. |
+| **`Billy-workflow`** | 1. **Determina la Plataforma** de origen (Siigo, Cuenti, Sheets). <br/> 2. **Obtiene Credenciales** de Secret Manager. <br/> 3. **Invoca el Adaptador de Datos** (`get-data-from-*`). <br/> 4. **Itera** sobre cada factura obtenida. <br/> 5. **Invoca** `process-and-send-message` para cada factura. |
 | **Adaptadores de Datos** | **`get-data-from-sheets`**, **`get-data-from-cuenti`**, **`get-data-from-siigo`**. Transforman datos de formatos de terceros al esquema interno de Billy. |
 | **Manejo de Errores** | El *workflow* maneja errores de procesamiento *por factura*, asegurando que una factura fallida no detenga el envío de las demás. |
 
@@ -39,7 +39,7 @@ Esta fase contiene la inteligencia y la decisión final sobre el mensaje.
 
 | Componente | Responsabilidad |
 | :--- | :--- |
-| **`process-and-send-message`** | **Núcleo de la Lógica:** 1. **Genera Tono y Contenido** usando el Asistente de OpenAI (determina si es EMAIL, SMS, WHATSAPP, o TEMPLATE). 2. **Ejecuta el Envío** a través de las APIs externas (Campaign Monitor, sms.to, etc.). 3. **Registra la Acción** en la API de *analytics* de Billy. |
+| **`process-and-send-message`** | **Núcleo de la Lógica:** 1. **Genera Tono y Contenido** usando el Asistente de OpenAI (determina si es EMAIL, SMS, WHATSAPP, o TEMPLATE). <br/> 2. **Ejecuta el Envío** a través de las APIs externas (Campaign Monitor, sms.to, etc.). <br/> 3. **Registra la Acción** en la API de *analytics* de Billy. |
 | **`save-user-credentials`** | **Endpoint de Seguridad.** Almacena credenciales sensibles de terceros (Siigo/Cuenti tokens) en Secret Manager de forma segura, bajo una clave única por usuario. |
 
 ## Diagrama Lógico Simplificado
@@ -64,6 +64,6 @@ La función de envío es el corazón de la lógica de negocio y depende de múlt
 1. Activación: El Billy-workflow llama a -> process-and-send-message (por cada factura).
 2. Inteligencia Artificial: La función llama a -> OpenAI para generar el mensaje y determinar el canal.
 3. Registro y Envío: La función ejecuta:
-    * -> Campaign Monitor (para Correo Electrónico).
-    * -> sms.to (para SMS/WhatsApp).
-    * -> API de Registro de Billy (para guardar el log de la acción).
+    * -> Campaign Monitor (para Correo Electrónico).
+    * -> sms.to (para SMS/WhatsApp).
+    * -> API de Registro de Billy (para guardar el log de la acción).
