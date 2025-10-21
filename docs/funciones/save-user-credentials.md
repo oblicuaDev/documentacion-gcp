@@ -38,11 +38,12 @@ La función espera un `POST` con la identificación del usuario, el servicio de 
   }
 }
 ```
-### B. Proceso de Almacenamiento
 
-  * **Construcción del Nombre del Secreto:** Se genera dinámicamente el nombre del secreto en el formato: `[servicio-minúsculas]-[billy_user]-credentials`.
+### B. Proceso de Almacenamiento
+  
+  ***Construcción del Nombre del Secreto:** Se genera dinámicamente el nombre del secreto en el formato: `[servicio-minúsculas]-[billy_user]-credentials`.
       * Ejemplo: Si `service="SIIGO"` y `billy_user="prueba"`, el secreto será: `siigo-prueba-credentials`.
-  * **`upsertSecret`:** Intenta crear el secreto. Si ya existe (`código 6 = ALREADY_EXISTS`), simplemente agrega una nueva versión con el nuevo *payload* (objeto JSON de credenciales).
+  ***`upsertSecret`:** Intenta crear el secreto. Si ya existe (`código 6 = ALREADY_EXISTS`), simplemente agrega una nueva versión con el nuevo *payload* (objeto JSON de credenciales).
 
 ### C. Importancia de la Seguridad
 

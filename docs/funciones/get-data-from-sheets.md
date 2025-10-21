@@ -30,16 +30,18 @@ La función espera un objeto JSON con el enlace del *spreadsheet* y un *flag* de
   "isTest": false 
 }
 ```
+
 ### B. Proceso de Lectura
 
-1.  **Autenticación:** Utiliza las credenciales de la Cuenta de Servicio obtenidas de Secret Manager.
-2.  **Extracción de ID:** El ID del *spreadsheet* se extrae mediante una expresión regular del `link_drive` proporcionado.
-3.  **Rango de Lectura:** Se lee la hoja **'Facturas por cobrar'** en el rango **`A:M`**.
-4.  **Mapeo:** La primera fila se usa como cabecera para mapear las filas restantes a objetos clave-valor.
+1. **Autenticación:** Utiliza las credenciales de la Cuenta de Servicio obtenidas de Secret Manager.
+2. **Extracción de ID:** El ID del *spreadsheet* se extrae mediante una expresión regular del `link_drive` proporcionado.
+3. **Rango de Lectura:** Se lee la hoja **'Facturas por cobrar'** en el rango **`A:M`**.
+4. **Mapeo:** La primera fila se usa como cabecera para mapear las filas restantes a objetos clave-valor.
 
 ### C. Validación y Filtrado
 
 La función aplica una validación estricta para asegurar la calidad de los datos antes de la ingesta:
+
 * Se filtran las filas donde las columnas de **Monto** o **Email** estén vacías (columnas D y I respectivamente).
 * Si `isTest` es `true`, la salida se limita a las **primeras 5 filas** válidas.
 

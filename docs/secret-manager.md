@@ -18,7 +18,7 @@ Las credenciales de los sistemas de facturación de terceros se almacenan bajo u
 | :--- | :--- | :--- |
 | `servicio-minúsculas` | Plataforma de facturación (ej. `siigo`, `cuenti`, `allegra`). | `siigo` |
 | `billy_user` | Identificador único del cliente de Oblicua. | `302` o `21` |
-| **Secreto Resultante** | `siigo-302-credentials` |
+| **Secreto Resultante** | `siigo-302-credentials` |  |
 
 ## 2. Listado de Secretos Centrales y su Uso
 
@@ -40,7 +40,7 @@ Se han añadido los secretos necesarios para la integración avanzada con **What
 
 ## 3. Flujo de Vida de una Credencial
 
-1.  **Creación:** El *frontend* del usuario envía las credenciales de un tercero a la función **`save-user-credentials`**.
-2.  **Almacenamiento:** `save-user-credentials` crea o actualiza el secreto en Secret Manager bajo la convención `[servicio]-[usuario]-credentials`.
-3.  **Acceso:** El **`Billy-workflow`** recupera el secreto llamando a la API de Secret Manager, utilizando la Cuenta de Servicio del Workflow (que debe tener el rol **`Secret Manager Secret Accessor`**).
-4.  **Uso:** El Workflow pasa el valor del secreto (el *payload* de la credencial) a la función de adaptación correspondiente (`get-data-from-siigo`, etc.) a través del cuerpo de la petición HTTP.
+1. **Creación:** El *frontend* del usuario envía las credenciales de un tercero a la función **`save-user-credentials`**.
+2. **Almacenamiento:** `save-user-credentials` crea o actualiza el secreto en Secret Manager bajo la convención `[servicio]-[usuario]-credentials`.
+3. **Acceso:** El **`Billy-workflow`** recupera el secreto llamando a la API de Secret Manager, utilizando la Cuenta de Servicio del Workflow (que debe tener el rol **`Secret Manager Secret Accessor`**).
+4. **Uso:** El Workflow pasa el valor del secreto (el *payload* de la credencial) a la función de adaptación correspondiente (`get-data-from-siigo`, etc.) a través del cuerpo de la petición HTTP.

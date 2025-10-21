@@ -22,10 +22,10 @@ Esta función se despliega como un servicio **Cloud Run** (aunque usa el *framew
 
 ## 2. Flujo de Datos
 
-1.  **Entrada (Input):** Recibe un **`POST`** del Workflow con la configuración de la tarea (`taskConfig`) y credenciales sensibles (`credentials`) obtenidas de Secret Manager.
-2.  **Procesamiento:** La función llama al *endpoint* PHP (`https://billy.oblicua.co/cuenti/cuenti.php`).
-3.  **Transformación Crítica:** La respuesta del script PHP es un **string JSON anidado** que debe ser decodificado (`JSON.parse`) antes del mapeo de campos.
-4.  **Salida (Output):** Devuelve un arreglo de objetos JSON con el formato estandarizado, incluyendo la inicialización de los nuevos campos de control (`Etapa_actual`, `Cobrador_...`), directamente al Workflow.
+1. **Entrada (Input):** Recibe un **`POST`** del Workflow con la configuración de la tarea (`taskConfig`) y credenciales sensibles (`credentials`) obtenidas de Secret Manager.
+2. **Procesamiento:** La función llama al *endpoint* PHP (`https://billy.oblicua.co/cuenti/cuenti.php`).
+3. **Transformación Crítica:** La respuesta del script PHP es un **string JSON anidado** que debe ser decodificado (`JSON.parse`) antes del mapeo de campos.
+4. **Salida (Output):** Devuelve un arreglo de objetos JSON con el formato estandarizado, incluyendo la inicialización de los nuevos campos de control (`Etapa_actual`, `Cobrador_...`), directamente al Workflow.
 
 ## 3. Código Fuente (Node.js)
 

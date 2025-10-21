@@ -39,11 +39,12 @@ El cuerpo de la petición **`POST`** contiene la configuración de la tarea sele
 }
 
 ```
+
 ### B. Proceso de Orquestación
 
-1.  **Validación:** Se verifica que el método sea `POST` y que el payload contenga el objeto `data`.
-2.  **Manejo de CORS:** Responde a peticiones `OPTIONS` y establece los encabezados de `Access-Control` para permitir que el *frontend* de Oblicua interactúe con la función.
-3.  **Inicio del Workflow:** Utiliza el cliente `ExecutionsClient` para iniciar el `Billy-workflow` con el objeto `taskData` como argumento (`argument: JSON.stringify(taskData)`).
+1. **Validación:** Se verifica que el método sea `POST` y que el payload contenga el objeto `data`.
+2. **Manejo de CORS:** Responde a peticiones `OPTIONS` y establece los encabezados de `Access-Control` para permitir que el *frontend* de Oblicua interactúe con la función.
+3. **Inicio del Workflow:** Utiliza el cliente `ExecutionsClient` para iniciar el `Billy-workflow` con el objeto `taskData` como argumento (`argument: JSON.stringify(taskData)`).
 
 ### C. Éxito y Errores
 

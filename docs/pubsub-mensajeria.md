@@ -44,5 +44,6 @@ Este es el formato JSON que las funciones de transformación (`get-data-from-cue
 ## 3. Temas de Pub/Sub (Registro)
 
 Aunque los datos no fluyen por Pub/Sub en el workflow central, si se utilizara un sistema de logging asíncrono o de registro de eventos, se utilizarían los siguientes temas:
-   * billy-events: Registro de eventos de alto nivel (ej. "Se completó la ejecución del workflow", "El adaptador X falló").
-   * billy-audit-log: Registro detallado de cada acción de envío (ej. "SMS enviado a 3001234567").
+
+* billy-events: Registro de eventos de alto nivel (ej. "Se completó la ejecución del workflow", "El adaptador X falló").
+* billy-audit-log: Registro detallado de cada acción de envío (ej. "SMS enviado a 3001234567").
