@@ -408,15 +408,15 @@ El flujo central ahora incluye una **lógica de ramificación avanzada** para Wh
 2.  **Generación de Mensaje (OpenAI):** El Asistente de OpenAI determina el **canal (`type`)** y el **tono (`tone`)** de la comunicación. El output incluye un JSON con `type`, `subject`, `msg`, `amount`, y `tone`.
 3.  **EMAIL / TEMPLATE:** Usa Campaign Monitor. Permite usar el contenido generado por IA (`EMAIL`) o una plantilla HTML predefinida (`TEMPLATE`).
 4.  **SMS:** Usa la función `shortenForSms` (llamada a GPT-3.5-turbo) para garantizar que el mensaje no exceda los 160 caracteres antes de enviarlo por la API de `sms.to`.
-5.  **WHATSAPP (NUEVO):**
+5.  **WHATSAPP:**
     * Utiliza el token y las plantillas de la API de Meta, extraídas de Secret Manager.
     * La lógica selecciona la plantilla correcta (`exigente`, `formal`, `amistoso`) basándose en el campo `tone` devuelto por la IA.
-    * Incluye una **lógica especial para el usuario 20 (SOS Jurídico)**, utilizando tokens y plantillas específicos para ese flujo legal.
+    * Incluye una **lógica especial para el usuario 20 (SOS Jurídico)**, utilizando tokens y plantillas específicos para ese flujo.
 
 ### B. Registro de la Acción
 
 * Se utiliza la función `buildBillyPayload` para estandarizar el registro con los campos **`etapa`**, **`due_date`**, **`days_outstanding`**, y el **`channel`** adecuado (`channelId: 1` para Email, `2` para SMS, `3` para WhatsApp).
-* La acción se registra en la API de Billy **solo si no es un modo de prueba (`isTest`)**.
+* La acción se registra en la API de Billy **solo si no es un modo de prueba**.
 
 ## 3. Código Fuente (Node.js)
 

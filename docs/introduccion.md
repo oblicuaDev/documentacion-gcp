@@ -22,5 +22,5 @@ El objetivo principal de Billy es **automatizar la comunicación de cobros** de 
 | :--- | :--- |
 | **Integración de Datos** | Conexión directa con sistemas de facturación (Siigo, Cuenti, Allegra) y matrices de Google Sheets para extraer facturas en mora. |
 | **Lógica de Tono por IA** | Utiliza OpenAI para generar mensajes únicos con el tono (informal, formal, exigente) y la urgencia adecuada, basándose en la antigüedad y el monto de la deuda. |
-| **Mensajería Multi-Canal** | Decide inteligentemente el mejor canal para cada cliente. Utiliza Campaign Monitor (Email) y sms.to (SMS/WhatsApp) para el envío. |
+| **Mensajería Multi-Canal** | Decide inteligentemente el mejor canal para cada cliente. Utiliza **Campaign Monitor (Email)**, **sms.to (SMS)**, y la **API de Meta (WhatsApp)** para el envío. |
 | **Seguridad de Credenciales** | Todas las claves de API de terceros se almacenan en **Secret Manager**, gestionadas por la función `save-user-credentials`, asegurando que las credenciales no se expongan en código ni en variables de entorno. |
