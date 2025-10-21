@@ -1,7 +1,7 @@
 ---
 id: get-data-from-siigo
 title: 🔗 get-data-from-siigo (Cloud Function)
-sidebar_label: Adaptador Siigo
+sidebar_label: Procesador Siigo
 ---
 
 # Función `get-data-from-siigo`
@@ -26,7 +26,7 @@ Recibe la configuración de la tarea (`taskConfig`) y las credenciales de Secret
 
 ### B. Mapeo de Campos Críticos
 
-La función `transformSiigoInvoice` es responsable de la lógica de mapeo, navegando estructuras anidadas como `invoice.customer.details.contacts[0].phone` para obtener la información de contacto del cliente.
+La función `transformSiigoInvoice` es responsable de la lógica de mapeo, utilizando *optional chaining* para navegar las estructuras anidadas y obtener campos como teléfono y email del contacto principal del cliente. El mapeo se realiza de forma robusta para manejar estructuras de respuesta variables de Siigo.
 
 ### C. Procesamiento de Respuesta
 
@@ -73,7 +73,6 @@ functions.http('getDataFromSiigo', async (req, res) => {
 
     try {
         // 1. Construir la solicitud para el script PHP de SIIGO
-        // Nota: La URL es para el script intermediario, no el API de Siigo directo
         const phpUrl = '[https://billy.oblicua.co/cuenti/siigo.php](https://billy.oblicua.co/cuenti/siigo.php)';
         const phpPayload = {
             username: credentials.username,

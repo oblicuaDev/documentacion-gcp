@@ -1,7 +1,7 @@
 ---
 id: get-data-from-sheets
 title: 📄 get-data-from-sheets (Cloud Function)
-sidebar_label: Adaptador Google Sheets
+sidebar_label: Procesador Google Sheets
 ---
 
 # Función `get-data-from-sheets`
@@ -72,7 +72,7 @@ functions.http('getDataFromSheets', async (req, res) => {
     const serviceAccountCreds = await getSheetCredentials();
     const auth = new google.auth.GoogleAuth({
       credentials: serviceAccountCreds,
-      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+      scopes: ['[https://www.googleapis.com/auth/spreadsheets.readonly](https://www.googleapis.com/auth/spreadsheets.readonly)'],
     });
     const sheets = google.sheets({ version: 'v4', auth });
 

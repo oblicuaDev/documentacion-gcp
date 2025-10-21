@@ -10,27 +10,33 @@ sidebar_label: Secret Manager
 
 ## 1. Convención de Nomenclatura para Credenciales de Cliente
 
-Las credenciales de los sistemas de facturación de terceros (Siigo, Cuenti, Allegra) se almacenan bajo una convención estricta que permite al **`Billy-workflow`** construir la ruta de acceso de forma dinámica:
+Las credenciales de los sistemas de facturación de terceros se almacenan bajo una convención estricta que permite al **`Billy-workflow`** construir la ruta de acceso de forma dinámica:
 
 **Formato:** `[servicio-minúsculas]-[billy_user]-credentials`
 
-| Segmento | Descripción | Ejemplo de Valor |
+| Segmento | Descripción | Ejemplo de Valor (Ver imagen: `siigo-302-credentials`) |
 | :--- | :--- | :--- |
 | `servicio-minúsculas` | Plataforma de facturación (ej. `siigo`, `cuenti`, `allegra`). | `siigo` |
-| `billy_user` | Identificador único del cliente de Oblicua. | `prueba` |
-| **Secreto Resultante** | `siigo-prueba-credentials` |
+| `billy_user` | Identificador único del cliente de Oblicua. | `302` o `21` |
+| **Secreto Resultante** | `siigo-302-credentials` |
 
 ## 2. Listado de Secretos Centrales y su Uso
 
-Los siguientes secretos son **estáticos** y contienen las claves de las APIs de envío y utilidades internas del sistema.
+Se han añadido los secretos necesarios para la integración avanzada con **WhatsApp (API de Meta)** y las plantillas de mensaje asociadas.
 
 | Nombre del Secreto | Uso Principal | Función que lo Utiliza |
 | :--- | :--- | :--- |
-| **`openai-api-key`** | Clave de acceso a la API de **OpenAI** (para generación de tono y contenido de mensajes). | `process-and-send-message` |
-| **`campaign-monitor-api-key`** | Clave para enviar correos electrónicos transaccionales. | `process-and-send-message` |
-| **`smsto-api-key`** | Clave para el envío de mensajes SMS/WhatsApp. | `process-and-send-message` |
+| **`openai-api-key`** | Clave de acceso a la API de **OpenAI** (Generación de tono y contenido). | `process-and-send-message` |
 | **`billy-api-token`** | Token para autenticarse en la **API de Registro de Billy** (*analytics*). | `process-and-send-message` |
-| **`google-sheets-credentials`** | Cuenta de Servicio con permisos de solo lectura para acceder a las matrices de Google Sheets de los clientes. | `get-data-from-sheets` |
+| **`google-sheets-credentials`** | Cuenta de Servicio con permisos de solo lectura para Google Sheets. | `get-data-from-sheets` |
+| **`campaign-monitor-api-key`** | Clave para enviar correos electrónicos transaccionales. | `process-and-send-message` |
+| **`smsto-api-key`** | Clave para el envío de mensajes SMS. | `process-and-send-message` |
+| **`whatsapp-api-token`** | Token de acceso a la API principal de **Meta/WhatsApp**. | `process-and-send-message` |
+| **`whatsapp-billy-sos-api-token`** | Token especial para el flujo de **SOS Jurídico** (Usuario 20). | `process-and-send-message` |
+| **`whatsapp-template-exigente`** | Contenido de la plantilla para el tono exigente. | `process-and-send-message` |
+| **`whatsapp-template-formal`** | Contenido de la plantilla para el tono formal. | `process-and-send-message` |
+| **`whatsapp-template-amistoso`** | Contenido de la plantilla para el tono amistoso/amigable. | `process-and-send-message` |
+| **`whatsapp-template-sos-juridico`** | Contenido de la plantilla para el caso especial de SOS Jurídico. | `process-and-send-message` |
 
 ## 3. Flujo de Vida de una Credencial
 

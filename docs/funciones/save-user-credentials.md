@@ -37,18 +37,16 @@ La función espera un `POST` con la identificación del usuario, el servicio de 
     "partner_id": "12345"
   }
 }
-
 ```
 ### B. Proceso de Almacenamiento
 
-1.  **Construcción del Nombre del Secreto:** Se genera dinámicamente el nombre del secreto en el formato: [servicio-minúsculas]-[billy_user]-credentials.
-
-Ejemplo: Si service="SIIGO" y billy_user="prueba", el secreto será: siigo-prueba-credentials.
-
-2. **upsertSecret:** Intenta crear el secreto. Si ya existe (código 6 = ALREADY_EXISTS), simplemente agrega una nueva versión con el nuevo payload (objeto JSON de credenciales).
+  * **Construcción del Nombre del Secreto:** Se genera dinámicamente el nombre del secreto en el formato: `[servicio-minúsculas]-[billy_user]-credentials`.
+      * Ejemplo: Si `service="SIIGO"` y `billy_user="prueba"`, el secreto será: `siigo-prueba-credentials`.
+  * **`upsertSecret`:** Intenta crear el secreto. Si ya existe (`código 6 = ALREADY_EXISTS`), simplemente agrega una nueva versión con el nuevo *payload* (objeto JSON de credenciales).
 
 ### C. Importancia de la Seguridad
-Esta función es el punto más sensible, ya que maneja credenciales de terceros. Es crítico que la validación de acceso esté configurada en el entorno de producción para garantizar que solo usuarios autenticados de Oblicua puedan invocar este endpoint.
+
+Esta función es el punto más sensible. Es crítico que la **validación de acceso (mediante JWT en producción)** esté configurada en el entorno de producción para garantizar que solo usuarios autenticados de Oblicua puedan invocar este *endpoint*.
 
 ## 3. Código Fuente (Node.js)
 

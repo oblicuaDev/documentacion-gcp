@@ -1,7 +1,7 @@
 ---
 id: get-data-from-cuenti
 title: 💻 get-data-from-cuenti (Cloud Function)
-sidebar_label: Adaptador Cuenti
+sidebar_label: Procesador Cuenti
 ---
 
 # Función `get-data-from-cuenti`
@@ -23,32 +23,36 @@ Esta función se despliega como un servicio **Cloud Run** (aunque usa el *framew
 ## 2. Flujo de Datos
 
 1.  **Entrada (Input):** Recibe un **`POST`** del Workflow con la configuración de la tarea (`taskConfig`) y credenciales sensibles (`credentials`) obtenidas de Secret Manager.
-2.  **Procesamiento:** La función llama al *endpoint* PHP (`https://billy.oblicua.co/cuenti/cuenti.php`) usando las credenciales.
-3.  **Transformación:** Mapea el arreglo de facturas de Cuenti al esquema interno de Billy.
-4.  **Salida (Output):** Devuelve un arreglo de objetos JSON con el formato estandarizado directamente al Workflow.
+2.  **Procesamiento:** La función llama al *endpoint* PHP (`https://billy.oblicua.co/cuenti/cuenti.php`).
+3.  **Transformación Crítica:** La respuesta del script PHP es un **string JSON anidado** que debe ser decodificado (`JSON.parse`) antes del mapeo de campos.
+4.  **Salida (Output):** Devuelve un arreglo de objetos JSON con el formato estandarizado, incluyendo la inicialización de los nuevos campos de control (`Etapa_actual`, `Cobrador_...`), directamente al Workflow.
 
 ## 3. Código Fuente (Node.js)
 
-La lógica clave se encuentra en la transformación de la factura y en la llamada al API intermediario.
+La lógica clave se encuentra en la manipulación de la respuesta anidada y la inclusión de los nuevos campos en la transformación.
 
 ```javascript title="index.js"
 const functions = require('@google-cloud/functions-framework');
 const axios = require('axios');
 
 /**
- * Transforma una factura de formato CUENTI a nuestro formato estándar.
- * @param {object} cuentiInvoice - Una factura individual del API de CUENTI/PHP.
- * @returns {object} La factura en el formato que nuestro sistema entiende.
+ * Transforma un objeto de factura con el formato de CUENTI al formato estándar del sistema.
+ * @param {object} cuentiInvoice - Un objeto de factura individual con la estructura devuelta por el script de CUENTI.
+ * @returns {object} Un objeto de factura con la estructura estandarizada que el sistema espera.
  */
 function transformCuentiInvoice(cuentiInvoice) {
-    // Helper para formatear fechas que vienen como timestamp de Unix (en milisegundos).
+    /**
+     * Convierte un timestamp de Unix (en milisegundos) a una fecha en formato YYYY-MM-DD.
+     * @param {number} timestamp - El timestamp a formatear.
+     * @returns {string|null} La fecha formateada o null si el timestamp no es válido.
+     */
     const formatDate = (timestamp) => {
         if (!timestamp) return null;
-        // new Date() en JavaScript acepta milisegundos directamente.
         return new Date(parseInt(timestamp, 10)).toISOString().split('T')[0];
     };
 
-    // Mapea los campos de CUENTI a los nombres de columna que usamos en el resto del sistema.
+    // Mapea los campos de la respuesta de CUENTI a los nombres de clave estándar
+    // que la función 'process-and-send-message' espera recibir.
     return {
         'No._Factura': cuentiInvoice.nFactura,
         'Fecha_de_vencimiento': formatDate(cuentiInvoice.fecha_vencimiento),
@@ -60,48 +64,60 @@ function transformCuentiInvoice(cuentiInvoice) {
         'email_Cliente': cuentiInvoice.email,
         'Indicativo_Cel_Cliente': cuentiInvoice.prefijo,
         'Nit_Cliente': cuentiInvoice.identificacion,
-        // Añade aquí cualquier otro campo que necesites del objeto de CUENTI
+        'Etapa_actual': null,
+        'Cobrador_si_Grupo_Oblicua_SAS_no_es_el_cobrador_final': null
     };
 }
 
 // --- Función Principal ---
 
+/**
+ * Cloud Function activada por HTTP para obtener y procesar datos de facturas desde CUENTI.
+ */
 functions.http('getDataFromCuenti', async (req, res) => {
-    // El workflow nos pasa la configuración de la tarea y las credenciales
+    // El workflow pasa las credenciales (obtenidas de Secret Manager) y la configuración de la tarea.
     const { credentials, taskConfig } = req.body;
 
+    // Valida que la solicitud contenga los datos necesarios para operar.
     if (!credentials || !taskConfig) {
         return res.status(400).send('Faltan parámetros: se requieren credentials y taskConfig.');
     }
 
     try {
-        // 1. Construir la solicitud para el script PHP
+        // Define la URL del script PHP intermediario y construye el payload con las credenciales.
         const phpUrl = '[https://billy.oblicua.co/cuenti/cuenti.php](https://billy.oblicua.co/cuenti/cuenti.php)';
-        // Se usan las credenciales de Secret Manager (ej: idEmpresa, token)
-        // y el taskConfig (ej: isTest)
         const phpPayload = {
             idEmpresa: credentials.idEmpresa,
             token: credentials.token,
             test: taskConfig.isTest
         };
 
-        // 2. Llamar al script PHP
+        // Realiza la llamada HTTP POST al script PHP para obtener los datos de las facturas.
         console.log('Llamando al script PHP de CUENTI...');
         const response = await axios.post(phpUrl, phpPayload);
-        const cuentiInvoices = response.data;
         
+        // Extrae el string de datos JSON de la respuesta anidada del script PHP.
+        const cuentiInvoicesString = response.data?.[0]?.data;
+        if (!cuentiInvoicesString || typeof cuentiInvoicesString !== 'string') {
+            throw new Error('La respuesta del script de CUENTI no contiene un string de datos válido.');
+        }
+
+        // Convierte el string JSON en un arreglo de objetos de factura utilizable.
+        const cuentiInvoices = JSON.parse(cuentiInvoicesString);
+
         if (!Array.isArray(cuentiInvoices)) {
-            throw new Error('La respuesta del script de CUENTI no es un arreglo de facturas.');
+            throw new Error('Los datos parseados de CUENTI no son un arreglo de facturas.');
         }
         console.log(`Se recibieron ${cuentiInvoices.length} facturas de CUENTI.`);
 
-        // 3. Transformar cada factura al formato estándar
+        // Itera sobre cada factura recibida y la transforma al formato estándar del sistema.
         const standardizedInvoices = cuentiInvoices.map(transformCuentiInvoice);
 
-        // 4. Devolver las facturas estandarizadas al workflow
+        // Devuelve la lista de facturas ya estandarizadas al workflow que invocó la función.
         res.status(200).json(standardizedInvoices);
 
     } catch (error) {
+        // Captura y registra cualquier error ocurrido durante el proceso para facilitar la depuración.
         console.error('Error al procesar datos de CUENTI:', error.response ? error.response.data : error.message);
         res.status(500).send('Error interno al obtener datos de CUENTI.');
     }

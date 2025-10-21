@@ -15,15 +15,18 @@ const config = {
     v4: true,
   },
   
-  url: 'https://github.com/oblicuaDev/documentacion-gcp', 
-  baseUrl: '/',
+  // URL base de tu sitio (Dominio o GitHub Pages URL)
+  url: 'https://oblicuadev.github.io', 
+  // IMPORTANTE: Para GitHub Pages, el baseUrl debe ser el nombre del repositorio
+  // Si se despliega en una rama 'gh-pages' (ej. oblicuaDev.github.io/documentacion-gcp/)
+  baseUrl: '/documentacion-gcp/', 
 
   // ----------------------------------------------------
-  // 2. CONFIGURACIÓN DE REPOSITORIO (Placeholders)
+  // 2. CONFIGURACIÓN DE REPOSITORIO (Finalizado)
   // ----------------------------------------------------
   organizationName: 'oblicuaDev', 
   projectName: 'documentacion-gcp',
-  deploymentBranch: 'gh-pages',
+  deploymentBranch: 'gh-pages', // Rama donde se subirá el contenido compilado
 
   onBrokenLinks: 'throw',
 
@@ -40,6 +43,7 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
+          // Enlace directo al repositorio principal para editar
           editUrl: 'https://github.com/oblicuaDev/documentacion-gcp/tree/main/', 
         },
         blog: {
@@ -79,9 +83,8 @@ const config = {
             position: 'left',
             label: 'Documentación 📖', 
           },
-          // {to: '/blog', label: 'Novedades', position: 'left'}, 
           {
-            // Repositorio de Código (Placeholder)
+            // Enlace directo al repositorio de código
             href: 'https://github.com/oblicuaDev/documentacion-gcp',
             label: 'Código (GitHub) 🐙',
             position: 'right',
@@ -98,7 +101,6 @@ const config = {
             title: 'Documentación',
             items: [
               {
-                // Apunta a tu nueva página de introducción (ID: introduccion)
                 label: 'Introducción',
                 to: '/docs/introduccion', 
               },
@@ -112,20 +114,17 @@ const config = {
                 to: '/blog',
               },
               {
-                // Repositorio de Código (Placeholder)
                 label: 'Repositorio de Código',
                 href: 'https://github.com/oblicuaDev/documentacion-gcp',
               },
             ],
           },
         ],
-        // Cambia el nombre de la empresa al final
         copyright: `Copyright © ${new Date().getFullYear()} Oblicua. Built with Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
-        // Lenguajes para Cloud y desarrollo
         additionalLanguages: ['javascript', 'typescript', 'json', 'yaml', 'bash'],
       },
     }),
